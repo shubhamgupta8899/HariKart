@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/harikart
+    username: postgres
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  flyway:
+    enabled: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  jwt:
+    secret:
+    access-token-expiry: 900000  #15 min
+    refresh-token-expiry: 2592000000 #30 days
+
+
