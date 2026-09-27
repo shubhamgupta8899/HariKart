@@ -32,16 +32,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.accountStatus = :status ORDER BY u.createdAt DESC")
     List<User> findPendingApprovals(@Param("status") AccountStatus status);
 
-    @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role AND u.accountStatus = 'APPROVED'")
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role AND u.accountStatus = com.hariom.harikart.enums.AccountStatus.APPROVED")
     Long countActiveShopkeepers(@Param("role") Role role);
 
-    @Query("SELECT u FROM User u WHERE u.role = 'SHOPKEEPER' AND u.accountStatus = 'APPROVED' AND u.routeAssigned = :route")
+    @Query("SELECT u FROM User u WHERE u.role = com.hariom.harikart.enums.Role.SHOPKEEPER " +
+            "AND u.accountStatus = com.hariom.harikart.enums.AccountStatus.APPROVED " +
+            "AND u.routeAssigned = :route")
     List<User> findShopkeepersByRoute(@Param("route") Integer route);
 
-    @Query("SELECT u FROM User u WHERE u.isActive = true AND u.accountStatus = 'APPROVED' ORDER BY u.createdAt DESC")
+    @Query("SELECT u FROM User u WHERE u.isActive = true AND u.accountStatus = com.hariom.harikart.enums.AccountStatus.APPROVED ORDER BY u.createdAt DESC")
     List<User> findAllActiveUsers();
 
-    @Query("SELECT u FROM User u WHERE u.createdAt >= :startDate AND u.createdAt <= :endDate")
+    @Query("SELECT u FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate")
     List<User> findUsersBetweenDates(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     boolean existsByPhoneNumber(String phoneNumber);

@@ -1,6 +1,6 @@
 package com.hariom.hariKart.config;
 
-import com.hariom.hariKart.service.UserDetailsServiceImpl;
+import com.hariom.hariKart.service.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
 
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final com.hariom.harikart.security.UserDetailsServiceImpl userDetailsService;
 
 
     @Bean
