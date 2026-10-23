@@ -1,10 +1,10 @@
 package com.hariom.hariKart.service;
 
+import com.hariom.hariKart.entity.User;
 import com.hariom.hariKart.enums.AccountStatus;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import com.hariom.hariKart.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -31,13 +31,13 @@ public class CustomUserDetails implements UserDetails {
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
-    @Override public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }
     @Override public String getUsername() { return phoneNumber; }
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() {
-        // Only APPROVED + active accounts can log in
+
+    @Override
+    public boolean isEnabled() {
         return active && accountStatus == AccountStatus.APPROVED;
     }
 }

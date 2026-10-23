@@ -3,25 +3,21 @@ package com.hariom.hariKart.repository;
 import com.hariom.hariKart.entity.User;
 import com.hariom.hariKart.enums.AccountStatus;
 import com.hariom.hariKart.enums.Role;
-
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
     Optional<User> findByPhoneNumberAndRole(String phoneNumber, Role role);
 
-    List<User> findByAccountStatus(AccountStatus status);
+    List<User> findByAccountStatusOrderByCreatedAtDesc(AccountStatus status);
 
     List<User> findByRoleAndAccountStatus(Role role, AccountStatus status);
 
@@ -29,22 +25,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByRouteAssignedAndAccountStatus(Integer route, AccountStatus status);
 
-    @Query("SELECT u FROM User u WHERE u.accountStatus = :status ORDER BY u.createdAt DESC")
-    List<User> findPendingApprovals(@Param("status") AccountStatus status);
+    List<User> findByRoleAndAccountStatusAndRouteAssigned(Role role, AccountStatus status, Integer route);
 
-    @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role AND u.accountStatus = com.hariom.harikart.enums.AccountStatus.APPROVED")
-    Long countActiveShopkeepers(@Param("role") Role role);
+    long countByRoleAndAccountStatus(Role role, AccountStatus status);
 
-    @Query("SELECT u FROM User u WHERE u.role = com.hariom.harikart.enums.Role.SHOPKEEPER " +
-            "AND u.accountStatus = com.hariom.harikart.enums.AccountStatus.APPROVED " +
-            "AND u.routeAssigned = :route")
-    List<User> findShopkeepersByRoute(@Param("route") Integer route);
+    List<User> findByIsActiveTrueAndAccountStatusOrderByCreatedAtDesc(AccountStatus status);
 
-    @Query("SELECT u FROM User u WHERE u.isActive = true AND u.accountStatus = com.hariom.harikart.enums.AccountStatus.APPROVED ORDER BY u.createdAt DESC")
-    List<User> findAllActiveUsers();
-
-    @Query("SELECT u FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate")
-    List<User> findUsersBetweenDates(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query("SELECT u FROM User u WHERE u.createdAt BETWEEN :start AND :end")
+    List<User> findUsersBetweenDates(@Param("start") LocalDateTime start,
+                                     @Param("end") LocalDateTime end);
 
     boolean existsByPhoneNumber(String phoneNumber);
 

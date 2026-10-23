@@ -2,24 +2,19 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/harikart
     username: postgres
-    password:
-
+    password: ${Password}
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
-
   flyway:
     enabled: true
-
   data:
     redis:
       host: localhost
       port: 6379
 
-  jwt:
-    secret:
-    access-token-expiry: 900000  #15 min
-    refresh-token-expiry: 2592000000 #30 days
-
-
+jwt:
+  secret: ${JWT_SECRET:change-me-to-a-long-random-string-at-least-32-chars}
+  access-token-expiry-ms: 900000        # 15 min
+  refresh-token-expiry-ms: 2592000000   # 30 days

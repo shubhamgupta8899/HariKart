@@ -3,23 +3,17 @@ package com.hariom.hariKart.entity;
 import com.hariom.hariKart.enums.AccountStatus;
 import com.hariom.hariKart.enums.Role;
 import jakarta.persistence.*;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import lombok.*;
-import org.springframework.cglib.core.Local;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users",
-
-        indexes = {
-
-            @Index(unique = true, name = "idx_user_phone", columnList = "phoneNumber"),
-            @Index(name = "idx_users_role_status", columnList = "role"),
-            @Index(name = "idx_users_route", columnList = "route_assigned")
-        }
-)
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_role_status", columnList = "role, account_status"),
+        @Index(name = "idx_users_route", columnList = "route_assigned")
+})
 @Getter
 @Setter
 public class User {
@@ -28,12 +22,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 15)
+    @Column(name = "phone_number", unique = true, nullable = false, length = 15)
     private String phoneNumber;
 
+    @Column(name = "password_hash")
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Role role;
 
     @Enumerated(EnumType.STRING)
@@ -46,18 +42,14 @@ public class User {
     @Column(name = "owner_name", length = 100)
     private String ownerName;
 
-    @Column(name = "address", columnDefinition = "Text")
+    @Column(columnDefinition = "TEXT")
     private String address;
 
-    @Column(name = "latitude")
     private Double latitude;
-
-    @Column(name = "longitude")
     private Double longitude;
 
     @Column(name = "photo_url")
     private String photoUrl;
-    private Long routeId;
 
     @Column(name = "route_assigned")
     private Integer routeAssigned;
@@ -65,40 +57,38 @@ public class User {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = Boolean.TRUE;
 
+    @Column(name = "gst_number", length = 20)
+    private String gstNumber;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "gst_number", length = 20)
-    private String gstNumber;
-
     @PrePersist
-    void onCreate(){
-
+    void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;
         this.updatedAt = now;
-        if(this.accountStatus == null) this.accountStatus = AccountStatus.PENDING;
-        if(this.isActive == null) this.isActive = Boolean.TRUE;
+        if (this.accountStatus == null) this.accountStatus = AccountStatus.PENDING;
+        if (this.isActive == null) this.isActive = Boolean.TRUE;
     }
 
     @PreUpdate
-    void onUpdate(){
-
+    void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
     @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(!(o instanceof User u)) return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User u)) return false;
         return id != null && Objects.equals(id, u.id);
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return getClass().hashCode();
     }
 }

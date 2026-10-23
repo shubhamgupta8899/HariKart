@@ -1,18 +1,21 @@
-CREATE TYPE user_role AS ENUM ('ADMIN', 'VAN_STAFF', 'SHOPOKEEPER', 'RETAILER');
-CREATE TYPE account_status AS ENUM ('PENDING', 'APPROVED', 'REJECT');
-
 CREATE TABLE users (
-    ID BIGSERIAL PRIMARY KEY,
-    phone_number VARCHAR(15) UNIQUE NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    phone_number VARCHAR(15) NOT NULL UNIQUE,
     password_hash VARCHAR(255),
-    role user_role NOT NULL,
-    status account_status NOT NULL DEFAULT 'PENDING',
+    role VARCHAR(20) NOT NULL,
+    account_status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     shop_name VARCHAR(150),
     owner_name VARCHAR(100),
     address TEXT,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
     photo_url VARCHAR(255),
-    route_id BIGINT,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
-)
+    route_assigned INTEGER,
+    gst_number VARCHAR(20),
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_users_role_status ON users(role, account_status);
+CREATE INDEX idx_users_route ON users(route_assigned);
